@@ -5,8 +5,9 @@ OBJ_DIR = obj
 CC = g++
 CPPFLAGS = -Iinclude
 CFLAGS = -Wall
+EIGEN = -I /usr/include/eigen3
 
-LINK_TARGET = 
+LINK_TARGET = test
 
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_ALL = $(patsubst %.cpp, %.o, $(addprefix $(OBJ_DIR)/, $(notdir $(SRC))))
@@ -22,5 +23,9 @@ clean:
 	rm -f $(REBUILDABLES)
 	rm -f log.txt
 
+
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
-	$(CC) -g  $(CPPFLAGS) $(CFLAGS) -o $@ -c $< 
+	$(CC) -g  $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ -c $< 
+
+test : $(OBJ_DIR)/test.o 
+	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o test $(OBJ_DIR)/test.o
