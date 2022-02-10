@@ -31,6 +31,7 @@ namespace cir
         
         public:
             Gaussian();
+            Gaussian(unsigned seed);
             void operator()(double *p_out, const size_t& length, SimuType type);
             void gen(double *p_out, const size_t& length, SimuType type);
     };

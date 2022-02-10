@@ -9,12 +9,13 @@
 #include <iostream>
 #include <vector>
 #include <random>
+#include <chrono>
 #include "../include/simu_type.hpp"
 #include "../include/random.hpp"
 
 int main(int argc, char* argv[])
 {
-    auto gauss_gen = cir::Gaussian();
+
     // std::vector<int> shape({2, 3});
     size_t size = 6;
     auto _type = cir::PRECISE;
@@ -28,6 +29,13 @@ int main(int argc, char* argv[])
         std::string str_type(argv[2]);
         _type = static_cast<cir::SimuType>(std::stoi(str_type));
     }
+    unsigned seed = std::chrono::steady_clock::now().time_since_epoch().count();
+    if (argc >= 4)
+    {
+        std::string str_seed(argv[3]);
+        seed = unsigned(std::stoi(str_seed));
+    }
+    auto gauss_gen = cir::Gaussian(seed);
     std::cout << "size : " << size << ", ";
     std::cout << "type : " << _type << std::endl;
     double *rv_buf = new double[size]();

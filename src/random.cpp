@@ -28,6 +28,9 @@ namespace cir
                             gauss_distr(), uni_distr()
     { }
 
+    Gaussian::Gaussian(unsigned seed) : generator(seed), gauss_distr(), uni_distr()
+    { }
+
     void Gaussian::gen(double *p_out, const size_t& length, SimuType type)
     {
         // auto ord = shape.size();
