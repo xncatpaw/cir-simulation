@@ -2,11 +2,13 @@ SRC_DIR = src
 INC_DIR = include
 OBJ_DIR = obj
 EIGEN_DIR = /usr/include/eigen3
+BOOST_DIR = /usr/include/boost
 
 CC = g++
 CPPFLAGS = -Iinclude
 CFLAGS = -Wall
 EIGEN = -I $(EIGEN_DIR)
+BOOST = -I $(BOOST_DIR)
 
 LINK_TARGET = test, test_rng
 

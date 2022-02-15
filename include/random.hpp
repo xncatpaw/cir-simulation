@@ -35,4 +35,18 @@ namespace cir
             void operator()(double *p_out, const size_t& length, SimuType type);
             void gen(double *p_out, const size_t& length, SimuType type);
     };
+
+
+    /**
+     * @brief Class used to generate the non-central chi squared distribution.
+     */
+    // class NonCentralChi_2
+    // {
+    //     private:
+    //         uint _p, _q;
+    //         double _lam;
+        
+    //     public:
+    //         NonCentralChi_2(uint p, uint q, double lam);
+    // };
 }

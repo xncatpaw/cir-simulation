@@ -11,12 +11,13 @@
 #include <assert.h>
 #include <chrono>
 #include <cmath>
+#include <numeric>
 #include "../include/simu_type.hpp"
 #include "../include/random.hpp"
 
 namespace cir
 {
-    // Static constatns.
+    // Static constants.
     double Gaussian::_SQRT_3 = std::sqrt(double(3.0));
     double Gaussian::_SQRT_6 = std::sqrt(double(6.0));
     double Gaussian::_SQRT_3p6 = std::sqrt(double(3.0) + Gaussian::_SQRT_6);
@@ -24,12 +25,21 @@ namespace cir
     double Gaussian::_PROB_2nd = double(1.0) / double(6.0);
     double Gaussian::_PROB_3rd = (Gaussian::_SQRT_6 - 2.0) / (4.0 * Gaussian::_SQRT_6);
 
+
     Gaussian::Gaussian() : generator(std::chrono::steady_clock::now().time_since_epoch().count()),
                             gauss_distr(), uni_distr()
     { }
 
+
     Gaussian::Gaussian(unsigned seed) : generator(seed), gauss_distr(), uni_distr()
     { }
+
+
+    void Gaussian::operator()(double *p_out, const size_t& length, SimuType type)
+    {
+        gen(p_out, length, type);
+    }
+
 
     void Gaussian::gen(double *p_out, const size_t& length, SimuType type)
     {
@@ -61,8 +71,15 @@ namespace cir
         }
         else
         { }
-        
 
         return;
     }
+
+
+    // NonCentralChi_2::NonCentralChi_2(uint p, uint q, double lam=0.0)
+    // {
+    //     assert(lam >= 0);
+    //     _lam = lam;
+    // }
+
 } 
