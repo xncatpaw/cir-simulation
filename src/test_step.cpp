@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
     std::default_random_engine generator(std::chrono::steady_clock::now().time_since_epoch().count());
     std::normal_distribution<double> gauss_distr(0.0, h_sqrt);
 
+    std::cout << "Test with trace" << std::endl;
     p_X_3[0] = x0;
     p_X_4[0] = x0;
     for(size_t i=0; i<n; ++i)
@@ -38,5 +39,17 @@ int main(int argc, char* argv[])
     for(size_t i=0; i<n; ++i)
     {
         std::cout << p_X_3[i] << "  " << p_X_4[i] << std::endl;
+    }
+
+
+    std::cout << "Test without trace" << std::endl;
+    p_X_3[0] = x0;
+    p_X_4[0] = x0;
+    for(size_t i=0; i<n; ++i)
+    {
+        std::cout << p_X_3[0] << "  " << p_X_4[0] << std::endl;
+        double dW = gauss_distr(generator);
+        model_test._step_imp_3(p_X_3, p_X_3, dW, h);
+        model_test._step_imp_4(p_X_4, p_X_4, dW, h);
     }
 }

@@ -17,7 +17,14 @@
 namespace cir
 {
     CIR::CIR(double k, double a, double sigma) : _k(k), _a(a), _sigma(sigma),
-            _sigma_sqr(sigma*sigma)
+            _sigma_sqr(sigma*sigma), _gauss()
+    {
+        _nu = 4 * _a / _sigma_sqr;
+    }
+
+
+    CIR::CIR(double k, double a, double sigma, unsigned seed) : _k(k), _a(a), _sigma(sigma),
+            _sigma_sqr(sigma*sigma), _gauss(seed)
     {
         _nu = 4 * _a / _sigma_sqr;
     }
@@ -68,5 +75,50 @@ namespace cir
         tmp = std::sqrt(tmp) + term_sigdW + term_X_crt_sqrt;
         tmp = tmp / (_1kh * 2.0);
         *p_X_nxt = (tmp * tmp);
+    }
+
+
+    void CIR::gen(double* p_out, double h, size_t n, size_t num, double* p_x0, SimuScheme scheme, double lambda, bool trace)
+    {
+        auto std = std::sqrt(h); // The standared deviation of dW.
+        double dW = 0.0;
+        if(scheme == IMP_3)
+        {
+            for(size_t i=0; i<num; ++i)
+            {
+                auto p_tmp = trace ? p_out+i*(n+1) : p_out+i; // The shifted pointer to current sample.
+                                                              // If trace, shall shift i*(n+1), if not, shall shift i.
+                p_tmp[0] = p_x0[i]; // The first value.
+                for(size_t j=0; j<n; ++j)
+                {
+                    dW = _gauss.gen() * std;
+                    if(trace)
+                    { _step_imp_3(p_tmp+j, p_tmp+j+1, dW, h); }
+                    else
+                    { _step_imp_3(p_tmp, p_tmp, dW, h); }
+                }
+            }
+        }
+        else if (scheme == IMP_4)
+        {
+            for(size_t i=0; i<num; ++i)
+            {
+                auto p_tmp = trace ? p_out+i*(n+1) : p_out+i; // The shifted pointer to current sample.
+                                                              // If trace, shall shift i*(n+1), if not, shall shift i.
+                p_tmp[0] = p_x0[i]; // The first value.
+                for(size_t j=0; j<n; ++j)
+                {
+                    dW = _gauss.gen() * std;
+                    if(trace)
+                    { _step_imp_4(p_tmp+j, p_tmp+j+1, dW, h); }
+                    else
+                    { _step_imp_4(p_tmp, p_tmp, dW, h); }
+                }
+            }
+        }
+        else
+        {
+
+        }
     }
 }

@@ -31,10 +31,10 @@ $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
 	$(CC) -g  $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ -c $< 
 
 test : $(OBJ_DIR)/test.o 
-	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o test $(OBJ_DIR)/test.o
+	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o$@ $^ 
 
 test_rng : $(OBJ_DIR)/test_rng.o $(OBJ_DIR)/random.o
-	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ $(OBJ_DIR)/test_rng.o $(OBJ_DIR)/random.o
+	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ $^
 
-test_step : $(OBJ_DIR)/test_step.o $(OBJ_DIR)/model.o
-	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ $(OBJ_DIR)/test_step.o $(OBJ_DIR)/model.o
+test_step : $(OBJ_DIR)/test_step.o $(OBJ_DIR)/model.o $(OBJ_DIR)/random.o
+	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ $^
