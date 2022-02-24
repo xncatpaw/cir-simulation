@@ -78,6 +78,19 @@ namespace cir
     }
 
 
+    void CIR::_step_exp(double* p_X_crt, double* p_X_nxt, double dW, double h, double lambda)
+    {
+        auto _1kh = 1.0 - _k*h/2.0;
+        auto tmp = _1kh * std::sqrt(*p_X_crt) ;
+        tmp += (_sigma * dW) / (2.0 * _1kh);
+        tmp = tmp * tmp;
+        tmp = tmp + (_a - _sigma_sqr/4.0) * h;
+        tmp = tmp + lambda * (dW*dW - h);
+
+        *p_X_nxt = tmp;
+    }
+
+
     void CIR::gen(double* p_out, double h, size_t n, size_t num, double* p_x0, SimuScheme scheme, double lambda, bool trace)
     {
         auto std = std::sqrt(h); // The standared deviation of dW.
@@ -116,9 +129,24 @@ namespace cir
                 }
             }
         }
-        else
+        else if (scheme == EXP)
         {
+            assert(lambda>=0 && lambda<=(_a-_sigma_sqr/4.0));
 
+            for(size_t i=0; i<num; ++i)
+            {
+                auto p_tmp = trace ? p_out+i*(n+1) : p_out+i; // The shifted pointer to current sample.
+                                                              // If trace, shall shift i*(n+1), if not, shall shift i.
+                p_tmp[0] = p_x0[i]; // The first value.
+                for(size_t j=0; j<n; ++j)
+                {
+                    dW = _gauss.gen() * std;
+                    if(trace)
+                    { _step_exp(p_tmp+j, p_tmp+j+1, dW, h, lambda); }
+                    else
+                    { _step_exp(p_tmp, p_tmp, dW, h, lambda); }
+                }
+            }
         }
     }
 }

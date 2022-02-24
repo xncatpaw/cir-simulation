@@ -40,7 +40,7 @@ namespace cir
              * @param h The value of one step size.
              */
             void _step_imp_4(double* p_X_crt, double* p_X_nxt, double dW, double h);
-            // void _step_exp(std::shared_ptr<double>, size_t);
+            void _step_exp(double* p_X_crt, double* p_X_nxt, double dW, double h, double lambda);
 
         public:
             CIR(double k, double a, double sigma);
