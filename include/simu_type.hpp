@@ -11,5 +11,5 @@
 namespace cir
 {
     enum SimuType {PRECISE, SECOND_ORDER=2, THIRD_ORDER=3};
-    enum CIRScheme {IMP_3=3, IMP_4=4, EXP=5, TG=6};
+    enum CIRScheme {IMP_3=3, IMP_4=4, EXP=5, TG=6, QE=7};
 }

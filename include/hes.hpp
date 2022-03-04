@@ -19,14 +19,19 @@ namespace cir
     {
     private:
         CIR _vol;
-        Gaussian _gauss_X;
-        double _mu;
+        Gaussian _gauss;
+        double _mu, _rho, _rhocmp;
+
+
+
 
     public:
-        Heston(double mu, double k, double a, double sigma);
-        Heston(double mu, double k, double a, double sigma, unsigned seed_X, unsigned seed_V);
-        Heston(double mu, const CIR &);
+        Heston(double mu, double k, double a, double sigma, double rho=0.0);
+        Heston(double mu, double k, double a, double sigma, double rho, unsigned seed);
+        Heston(double mu, double rho, const CIR &);
         ~Heston();
+
+
 
     };
     

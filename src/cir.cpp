@@ -38,27 +38,6 @@ namespace cir
     CIR::~CIR() { }
 
 
-    double CIR::psi(double k, double t)
-    {
-        double res = 0;
-        if(k==0)
-        { res = t; }
-        else
-        { res = (1 - std::exp(-k*t)) / k; }
-        return res;
-    }
-
-
-    void CIR::psi(double *p_k, double *p_t, double *p_out)
-    {
-        double res = 0;
-        if((*p_k)==0)
-        { res = *(p_t); }
-        else
-        { res = (1 - std::exp(-(*p_k) * (*p_t))) / (*p_k); }
-        *p_out = res;
-    }
-
 
     void CIR::_step_imp_3(double* p_X_crt, double* p_X_nxt, double dW, double h)
     {
@@ -92,6 +71,12 @@ namespace cir
     }
 
 
+    void CIR::_step_qe(double* p_X_crt, double* p_X_nxt, double dW, double h)
+    {
+        //TODO
+    }
+
+
     void CIR::_step_exp(double* p_X_crt, double* p_X_nxt, double dW, double h, double lambda)
     {
         auto _1kh = 1.0 - _k*h/2.0;
@@ -117,6 +102,9 @@ namespace cir
             break;
         case TG:
             _step_tg(p_X_crt, p_X_nxt, dW, h);
+            break;
+        case QE:
+            _step_qe(p_X_crt, p_X_nxt, dW, h);
             break;
         case EXP:
             _step_exp(p_X_crt, p_X_nxt, dW, h, lambda);
@@ -201,4 +189,28 @@ namespace cir
         double h = T / (double (n));
         gen(p_out, h, n, num, p_x0, scheme, lambda, trace);
     }
+
+    // double CIR::psi(double k, double t)
+    // {
+    //     double res = 0;
+    //     if(k==0)
+    //     { res = t; }
+    //     else
+    //     { res = (1 - std::exp(-k*t)) / k; }
+    //     return res;
+    // }
+
+
+    // void CIR::psi(double *p_k, double *p_t, double *p_out)
+    // {
+    //     double res = 0;
+    //     if((*p_k)==0)
+    //     { res = *(p_t); }
+    //     else
+    //     { res = (1 - std::exp(-(*p_k) * (*p_t))) / (*p_k); }
+    //     *p_out = res;
+    // }
+
 }
+
+

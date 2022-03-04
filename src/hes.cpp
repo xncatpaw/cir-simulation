@@ -15,19 +15,21 @@
 
 namespace cir
 {
-    Heston::Heston(double mu, double k, double a, double sigma) : 
-            _vol(k, a, sigma), _gauss_X(), _mu(mu)
+    Heston::Heston(double mu, double k, double a, double sigma, double rho) :
+            _vol(k, a, sigma), _mu(mu), 
+            _rho(rho), _rhocmp(std::sqrt(1-rho*rho))
     { }
 
     
-    Heston::Heston(double mu, double k, double a, double sigma, unsigned seed_X, unsigned seed_V) :
-            _vol(k, a, sigma, seed_V), _gauss_X(seed_X), _mu(mu)
+    Heston::Heston(double mu, double k, double a, double sigma, double rho, unsigned seed) :
+            _vol(k, a, sigma), _gauss(seed), _mu(mu), 
+            _rho(rho), _rhocmp(std::sqrt(1-rho*rho))
     { }
 
 
-    Heston::Heston(double mu, const CIR & other) : _vol(other), _mu(mu)
+    Heston::Heston(double mu, double rho, const CIR & other) : _vol(other), _mu(mu), _gauss(),
+            _rho(rho), _rhocmp(std::sqrt(1-rho*rho))
     { }
-
 
     Heston::~Heston() { }
 }

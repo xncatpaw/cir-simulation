@@ -23,61 +23,14 @@ namespace cir
         Gaussian _gauss;
 
     public:
-        /**
-         * @brief Used to execute one step simulation of implicite-3 method.
-         * @param p_Xcrt Pointer to the value of X_{i}. 
-         * @param p_Xnxt Pointer to the value of X_{i+1}. 
-         * @param dW The value of W_{i+1} - W_{i}.
-         * @param h The value of one step size.
-         */
-        void _step_imp_3(double* p_X_crt, double* p_X_nxt, double dW, double h);
-
-        /**
-         * @brief Used to execute one step simulation of implicite-4 method.
-         * @param p_Xcrt Pointer to the value of X_{i}. 
-         * @param p_Xnxt Pointer to the value of X_{i+1}. 
-         * @param dW The value of W_{i+1} - W_{i}.
-         * @param h The value of one step size.
-         */
-        void _step_imp_4(double* p_X_crt, double* p_X_nxt, double dW, double h);
-
-        /**
-         * @brief Used to execute one step simulation of Truncated Gaussian method.
-         * @param p_Xcrt Pointer to the value of X_{i}. 
-         * @param p_Xnxt Pointer to the value of X_{i+1}. 
-         * @param dW The value of W_{i+1} - W_{i}.
-         * @param h The value of one step size.
-         */
-        void _step_tg(double* p_X_crt, double* p_X_nxt, double dW, double h);
-
-        /**
-         * @brief Used to execute one step simulation of explicit method.
-         * @param p_Xcrt Pointer to the value of X_{i}. 
-         * @param p_Xnxt Pointer to the value of X_{i+1}. 
-         * @param dW The value of W_{i+1} - W_{i}.
-         * @param h The value of one step size.
-         * @param lambda The lambda param in explicit method. 0 <= lambda <= a - sigma^2/4. 
-         */
-        void _step_exp(double* p_X_crt, double* p_X_nxt, double dW, double h, double lambda);
-
-        /**
-         * @brief Used to execute one step simulation with the specified method.
-         * @param p_Xcrt Pointer to the value of X_{i}. 
-         * @param p_Xnxt Pointer to the value of X_{i+1}. 
-         * @param dW The value of W_{i+1} - W_{i}.
-         * @param h The value of one step size.
-         * @param lambda The lambda param in explicit method. 0 <= lambda <= a - sigma^2/4. 
-         * @param scheme The scheme to simulate, could be IMP_3, IMP_4, TG or EXP, defined in CIRScheme.
-         */
-        void _step(double* p_X_crt, double* p_X_nxt, double dW, double h, double lambda, CIRScheme scheme);
 
     public:
         CIR(double k, double a, double sigma);
         CIR(double k, double a, double sigma, unsigned seed);
         CIR(const CIR &);
         ~CIR();
-        double psi(double k, double t);
-        void psi(double * p_k, double *p_t, double *p_out);
+        // double psi(double k, double t);
+        // void psi(double * p_k, double *p_t, double *p_out);
 
         /**
          * @brief Used to generate the process, with or without trace.
@@ -106,5 +59,62 @@ namespace cir
          * @param trace Whether keep or not the trace of process.
          */
         void gen(double* p_out, double h, size_t n, size_t num, double* p_x0, CIRScheme scheme, double lambda=0.0, bool trace=false);
+
+        /**
+         * @brief Used to execute one step simulation of implicite-3 method.
+         * @param p_Xcrt Pointer to the value of X_{i}. 
+         * @param p_Xnxt Pointer to the value of X_{i+1}. 
+         * @param dW The value of W_{i+1} - W_{i}.
+         * @param h The value of one step size.
+         */
+        void _step_imp_3(double* p_X_crt, double* p_X_nxt, double dW, double h);
+
+        /**
+         * @brief Used to execute one step simulation of implicite-4 method.
+         * @param p_Xcrt Pointer to the value of X_{i}. 
+         * @param p_Xnxt Pointer to the value of X_{i+1}. 
+         * @param dW The value of W_{i+1} - W_{i}.
+         * @param h The value of one step size.
+         */
+        void _step_imp_4(double* p_X_crt, double* p_X_nxt, double dW, double h);
+
+        /**
+         * @brief Used to execute one step simulation of Truncated Gaussian method.
+         * @param p_Xcrt Pointer to the value of X_{i}. 
+         * @param p_Xnxt Pointer to the value of X_{i+1}. 
+         * @param dW The value of W_{i+1} - W_{i}.
+         * @param h The value of one step size.
+         */
+        void _step_tg(double* p_X_crt, double* p_X_nxt, double dW, double h);
+
+        /**
+         * @brief Used to execute one step simulation of Quadratic Exponential method.
+         * @param p_Xcrt Pointer to the value of X_{i}. 
+         * @param p_Xnxt Pointer to the value of X_{i+1}. 
+         * @param dW The value of W_{i+1} - W_{i}.
+         * @param h The value of one step size.
+         */
+        void _step_qe(double* p_X_crt, double* p_X_nxt, double dW, double h);
+
+        /**
+         * @brief Used to execute one step simulation of explicit method.
+         * @param p_Xcrt Pointer to the value of X_{i}. 
+         * @param p_Xnxt Pointer to the value of X_{i+1}. 
+         * @param dW The value of W_{i+1} - W_{i}.
+         * @param h The value of one step size.
+         * @param lambda The lambda param in explicit method. 0 <= lambda <= a - sigma^2/4. 
+         */
+        void _step_exp(double* p_X_crt, double* p_X_nxt, double dW, double h, double lambda);
+
+        /**
+         * @brief Used to execute one step simulation with the specified method.
+         * @param p_Xcrt Pointer to the value of X_{i}. 
+         * @param p_Xnxt Pointer to the value of X_{i+1}. 
+         * @param dW The value of W_{i+1} - W_{i}.
+         * @param h The value of one step size.
+         * @param lambda The lambda param in explicit method. 0 <= lambda <= a - sigma^2/4. 
+         * @param scheme The scheme to simulate, could be IMP_3, IMP_4, TG or EXP, defined in CIRScheme.
+         */
+        void _step(double* p_X_crt, double* p_X_nxt, double dW, double h, double lambda=0.0, CIRScheme scheme=IMP_4);
 };
 }
