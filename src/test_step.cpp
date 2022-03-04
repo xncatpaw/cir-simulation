@@ -11,7 +11,7 @@
 #include <memory>
 #include <random>
 #include <chrono>
-#include "../include/model.hpp"
+#include "../include/cir.hpp"
 
 
 int main(int argc, char* argv[])

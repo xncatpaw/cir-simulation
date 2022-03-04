@@ -18,24 +18,26 @@ namespace cir
      */
     class Gaussian
     {
-        private:
-            static double _SQRT_3;
-            static double _SQRT_6;
-            static double _SQRT_3p6;
-            static double _SQRT_3m6;
-            static double _PROB_2nd;
-            static double _PROB_3rd;
-            std::default_random_engine generator;
-            std::normal_distribution<double> gauss_distr;
-            std::uniform_real_distribution<double> uni_distr;
-        
-        public:
-            Gaussian();
-            Gaussian(unsigned seed);
-            void operator()(double *p_out, const size_t& length, SimuType type=PRECISE);
-            double operator()();
-            void gen(double *p_out, const size_t& length, SimuType type);
-            double gen();
+    private:
+        static double _SQRT_3;
+        static double _SQRT_6;
+        static double _SQRT_3p6;
+        static double _SQRT_3m6;
+        static double _PROB_2nd;
+        static double _PROB_3rd;
+        std::default_random_engine generator;
+        std::normal_distribution<double> gauss_distr;
+        std::uniform_real_distribution<double> uni_distr;
+    
+    public:
+        Gaussian();
+        Gaussian(unsigned seed);
+        Gaussian(const Gaussian &); // Copy constructor.
+
+        void operator()(double *p_out, const size_t& length, SimuType type=PRECISE);
+        double operator()();
+        void gen(double *p_out, const size_t& length, SimuType type);
+        double gen();
     };
 
 

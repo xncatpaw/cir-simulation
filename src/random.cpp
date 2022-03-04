@@ -35,6 +35,12 @@ namespace cir
     { }
 
 
+    Gaussian::Gaussian(const Gaussian &other) : generator(other.generator), 
+                                                gauss_distr(other.gauss_distr), 
+                                                uni_distr(other.uni_distr)
+    { }
+
+
     void Gaussian::operator()(double *p_out, const size_t& length, SimuType type)
     {
         gen(p_out, length, type);

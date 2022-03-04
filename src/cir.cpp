@@ -1,5 +1,5 @@
 /**
- * @file model.hpp
+ * @file cir.cpp
  * @author bx.zh 
  * @brief Defined the CIR simulation model here.
  * @date 2022-02-15
@@ -12,7 +12,7 @@
 #include <cmath>
 #include "../include/simu_type.hpp"
 #include "../include/random.hpp"
-#include "../include/model.hpp"
+#include "../include/cir.hpp"
 
 namespace cir
 {
@@ -28,6 +28,14 @@ namespace cir
     {
         _nu = 4 * _a / _sigma_sqr;
     }
+
+
+    CIR::CIR(const CIR& other) : _k(other._k), _a(other._a), _sigma(other._sigma),
+            _sigma_sqr(other._sigma_sqr), _nu(other._nu),  _gauss(other._gauss) 
+    {}
+
+
+    CIR::~CIR() { }
 
 
     double CIR::psi(double k, double t)
@@ -78,6 +86,12 @@ namespace cir
     }
 
 
+    void CIR::_step_tg(double* p_X_crt, double* p_X_nxt, double dW, double h)
+    {
+        //TODO
+    }
+
+
     void CIR::_step_exp(double* p_X_crt, double* p_X_nxt, double dW, double h, double lambda)
     {
         auto _1kh = 1.0 - _k*h/2.0;
@@ -91,12 +105,38 @@ namespace cir
     }
 
 
-    void CIR::gen(double* p_out, double h, size_t n, size_t num, double* p_x0, SimuScheme scheme, double lambda, bool trace)
+    void CIR::_step(double* p_X_crt, double* p_X_nxt, double dW, double h, double lambda, CIRScheme scheme)
+    {
+        switch (scheme)
+        {
+        case IMP_3:
+            _step_imp_3(p_X_crt, p_X_nxt, dW, h);
+            break;
+        case IMP_4:
+            _step_imp_4(p_X_crt, p_X_nxt, dW, h);
+            break;
+        case TG:
+            _step_tg(p_X_crt, p_X_nxt, dW, h);
+            break;
+        case EXP:
+            _step_exp(p_X_crt, p_X_nxt, dW, h, lambda);
+            break;
+        default:
+            break;
+        }
+    }
+
+
+    void CIR::gen(double* p_out, double h, size_t n, size_t num, double* p_x0, CIRScheme scheme, double lambda, bool trace)
     {
         auto std = std::sqrt(h); // The standared deviation of dW.
         double dW = 0.0;
         if(scheme == IMP_3)
         {
+            // assert(2*_a>_sigma_sqr);
+            assert(_nu > 0.5);
+            if(_k < 0) { assert( h<=(-1.0/_k)); }
+
             for(size_t i=0; i<num; ++i)
             {
                 auto p_tmp = trace ? p_out+i*(n+1) : p_out+i; // The shifted pointer to current sample.
@@ -114,6 +154,10 @@ namespace cir
         }
         else if (scheme == IMP_4)
         {
+            // assert(4*_a>_sigma_sqr);
+            assert(_nu > 1);
+            if(_k < 0) { assert( h<=(-2.0/_k)); }
+
             for(size_t i=0; i<num; ++i)
             {
                 auto p_tmp = trace ? p_out+i*(n+1) : p_out+i; // The shifted pointer to current sample.
@@ -148,5 +192,13 @@ namespace cir
                 }
             }
         }
+    }
+
+
+    void CIR::operator()(double* p_out, double T, size_t n, size_t num, double* p_x0, CIRScheme scheme, double lambda, bool trace)
+    {
+        assert(T>=0 && n>0 && num>0 );
+        double h = T / (double (n));
+        gen(p_out, h, n, num, p_x0, scheme, lambda, trace);
     }
 }

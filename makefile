@@ -36,5 +36,5 @@ test : $(OBJ_DIR)/test.o
 test_rng : $(OBJ_DIR)/test_rng.o $(OBJ_DIR)/random.o
 	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ $^
 
-test_step : $(OBJ_DIR)/test_step.o $(OBJ_DIR)/model.o $(OBJ_DIR)/random.o
+test_step : $(OBJ_DIR)/test_step.o $(OBJ_DIR)/cir.o $(OBJ_DIR)/random.o
 	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ $^
