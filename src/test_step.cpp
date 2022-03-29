@@ -36,13 +36,17 @@ int main(int argc, char* argv[])
     p_X_4[0] = x0;
     p_X_e0[0] = x0;
     p_X_e1[0] = x0;
+
+    auto fn_imp_3 = model_test._pick_func(cir::IMP_3);
+    auto fn_imp_4 = model_test._pick_func(cir::IMP_4);
+    auto fn_exp = model_test._pick_func(cir::EXP);
     for(size_t i=0; i<n; ++i)
     {
         double dW = gauss_distr(generator);
-        model_test._step_imp_3(p_X_3+i, p_X_3+i+1, dW, h);
-        model_test._step_imp_4(p_X_4+i, p_X_4+i+1, dW, h);
-        model_test._step_exp(p_X_e0+i, p_X_e0+i+1, dW, h, 0);
-        model_test._step_exp(p_X_e1+i, p_X_e1+i+1, dW, h, lambda);
+        model_test._step(fn_imp_3, p_X_3+i, p_X_3+i+1, dW, h);
+        model_test._step(fn_imp_4, p_X_4+i, p_X_4+i+1, dW, h);
+        model_test._step(fn_exp, p_X_e0+i, p_X_e0+i+1, dW, h, 0);
+        model_test._step(fn_exp, p_X_e1+i, p_X_e1+i+1, dW, h, lambda);
     }
     for(size_t i=0; i<n; ++i)
     {
@@ -61,7 +65,9 @@ int main(int argc, char* argv[])
         std::cout << std::setprecision(5) << p_X_3[0] << "  " << p_X_4[0] << "  " \
                   << p_X_e0[0] << " " << p_X_e1[0] << std::endl;
         double dW = gauss_distr(generator);
-        model_test._step_imp_3(p_X_3, p_X_3, dW, h);
-        model_test._step_imp_4(p_X_4, p_X_4, dW, h);
+        model_test._step(fn_imp_3, p_X_3, p_X_3, dW, h);
+        model_test._step(fn_imp_4, p_X_4, p_X_4, dW, h);
+        model_test._step(fn_exp, p_X_e0, p_X_e0, dW, h, 0);
+        model_test._step(fn_exp, p_X_e1, p_X_e1, dW, h, lambda);
     }
 }
