@@ -31,8 +31,6 @@ namespace cir
         Heston(double mu, double rho, const CIR &);
         ~Heston();
 
-
-
     };
     
 }

@@ -101,14 +101,16 @@ namespace cir
          * @param h The value of one step size.
          * @return The value of X_{i+1}.
          */
-        double _step_qe(double X_crt, double dW, double h);
+        double _step_qe(double X_crt, double dW, double h, double lambda);
 
         /**
          * @brief Used to execute one step simulation of explicit method.
          * @param Xcrt The value of X_{i}. 
          * @param dW The value of W_{i+1} - W_{i}.
          * @param h The value of one step size.
-         * @param lambda The lambda param in explicit method. 0 <= lambda <= a - sigma^2/4. 
+         * @param lambda The lambda param for EXP or QE scheme.
+         *          For EXP, 0 <= lambda <= a-\sigma^2/4, 
+         *          For QE, 1 <= lambda <= 2.
          * @return The value of X_{i+1}.
          */
         double _step_exp(double X_crt, double dW, double h, double lambda);
@@ -119,9 +121,9 @@ namespace cir
          * @param p_Xnxt Pointer to the value of X_{i+1}. 
          * @param dW The value of W_{i+1} - W_{i}.
          * @param h The value of one step size.
-         * @param lambda The lambda param in explicit method. 0 <= lambda <= a - sigma^2/4. 
+         * @param p_other_arg The pointer to extra pararm(s), e.g. lambda for scheme EXP. 
          */
-        void _step(StepFnT func, double* p_X_crt, double* p_X_nxt, double dW, double h, double lambda=0.0);
+        void _step(StepFnT func, double* p_X_crt, double* p_X_nxt, double dW, double h, double* p_other_arg=nullptr);
 
         /**
          * @brief Used to pick the selected step function.
@@ -139,6 +141,6 @@ namespace cir
          * @return true
          * @return false 
          */
-        bool check_cond(double h, double* p_x0, double lambda, CIRScheme scheme);
+        bool check_cond(double h, double* p_x0, double* p_other_arg, CIRScheme scheme);
 };
 }

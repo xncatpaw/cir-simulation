@@ -38,6 +38,7 @@ namespace cir
         double operator()();
         void gen(double *p_out, const size_t& length, SimuType type);
         double gen();
+        double gen_unif();
     };
 
 

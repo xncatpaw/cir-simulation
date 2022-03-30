@@ -92,6 +92,12 @@ namespace cir
     {
         return gauss_distr(generator);
     }
+
+
+    double Gaussian::gen_unif()
+    {
+        return uni_distr(generator);
+    }
     // NonCentralChi_2::NonCentralChi_2(uint p, uint q, double lam=0.0)
     // {
     //     assert(lam >= 0);
