@@ -25,6 +25,7 @@ int main(int argc, char* argv[])
     double T = 1.0;
     size_t n = 10;
     double sigma=1.0, a=1.0, k=1.0, x0=1.0, h = T / n, lambda=0.5;
+    double lambda_0 = 0;
     double h_sqrt = std::sqrt(h);
 
     cir::CIR model_test(k, a, sigma);
@@ -45,8 +46,8 @@ int main(int argc, char* argv[])
         double dW = gauss_distr(generator);
         model_test._step(fn_imp_3, p_X_3+i, p_X_3+i+1, dW, h);
         model_test._step(fn_imp_4, p_X_4+i, p_X_4+i+1, dW, h);
-        model_test._step(fn_exp, p_X_e0+i, p_X_e0+i+1, dW, h, 0);
-        model_test._step(fn_exp, p_X_e1+i, p_X_e1+i+1, dW, h, lambda);
+        model_test._step(fn_exp, p_X_e0+i, p_X_e0+i+1, dW, h, &lambda_0);
+        model_test._step(fn_exp, p_X_e1+i, p_X_e1+i+1, dW, h, &lambda);
     }
     for(size_t i=0; i<n; ++i)
     {
@@ -67,7 +68,7 @@ int main(int argc, char* argv[])
         double dW = gauss_distr(generator);
         model_test._step(fn_imp_3, p_X_3, p_X_3, dW, h);
         model_test._step(fn_imp_4, p_X_4, p_X_4, dW, h);
-        model_test._step(fn_exp, p_X_e0, p_X_e0, dW, h, 0);
-        model_test._step(fn_exp, p_X_e1, p_X_e1, dW, h, lambda);
+        model_test._step(fn_exp, p_X_e0, p_X_e0, dW, h, &lambda_0);
+        model_test._step(fn_exp, p_X_e1, p_X_e1, dW, h, &lambda);
     }
 }

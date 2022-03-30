@@ -18,7 +18,7 @@ namespace cir
 {
     // typedef void (CIR::*StepFn)(double* p_X_crt, double* p_X_nxt, double dW, double h, double* p_other_arg);
     // typedef std::function<void (CIR, double*, double*, double, double, double*)> StepFnT;
-    typedef std::function<double (double X_crt, double dW, double h, double*)> StepFnT;
+    typedef std::function<double (double X_crt, double dW, double h, double*)> CIRStepFnT;
     class CIR
     {
     private:
@@ -32,6 +32,10 @@ namespace cir
     public:
 
     public:
+        /**
+         * @brief Construct a new CIR object
+         *  dX_t = (a-kX_t)dt + sigma sqrt(X_t) dW_t.
+         */
         CIR(double k, double a, double sigma);
         CIR(double k, double a, double sigma, unsigned seed);
         CIR(const CIR &);
@@ -68,6 +72,15 @@ namespace cir
         void gen(double* p_out, double h, size_t n, size_t num, double* p_x0, CIRScheme scheme, double lambda=0.0, bool trace=false);
 
         /**
+         * @brief Used to execute one step simulation of Euler method.
+         * @param Xcrt The value of X_{i}. 
+         * @param dW The value of W_{i+1} - W_{i}.
+         * @param h The value of one step size.
+         * @return The value of X_{i+1}.
+         */
+        double _step_eul(double X_crt, double dW, double h);
+
+        /**
          * @brief Used to execute one step simulation of implicite-3 method.
          * @param Xcrt The value of X_{i}. 
          * @param dW The value of W_{i+1} - W_{i}.
@@ -77,7 +90,7 @@ namespace cir
         double _step_imp_3(double X_crt, double dW, double h);
 
         /**
-         * @brief Used to execute one step simulation of implicite-3 method.
+         * @brief Used to execute one step simulation of implicite-4 method.
          * @param Xcrt The value of X_{i}. 
          * @param dW The value of W_{i+1} - W_{i}.
          * @param h The value of one step size.
@@ -86,7 +99,7 @@ namespace cir
         double _step_imp_4(double X_crt, double dW, double h);
 
         /**
-         * @brief Used to execute one step simulation of implicite-3 method.
+         * @brief Used to execute one step simulation of truncated Gaussian method.
          * @param Xcrt The value of X_{i}. 
          * @param dW The value of W_{i+1} - W_{i}.
          * @param h The value of one step size.
@@ -95,7 +108,7 @@ namespace cir
         double _step_tg(double X_crt, double dW, double h);
 
         /**
-         * @brief Used to execute one step simulation of implicite-3 method.
+         * @brief Used to execute one step simulation of Quadratic Exponential method.
          * @param Xcrt The value of X_{i}. 
          * @param dW The value of W_{i+1} - W_{i}.
          * @param h The value of one step size.
@@ -123,15 +136,15 @@ namespace cir
          * @param h The value of one step size.
          * @param p_other_arg The pointer to extra pararm(s), e.g. lambda for scheme EXP. 
          */
-        void _step(StepFnT func, double* p_X_crt, double* p_X_nxt, double dW, double h, double* p_other_arg=nullptr);
+        void _step(CIRStepFnT func, double* p_X_crt, double* p_X_nxt, double dW, double h, double* p_other_arg=nullptr);
 
         /**
          * @brief Used to pick the selected step function.
          * 
          * @param scheme The scheme to simulate, could be IMP_3, IMP_4, TG or EXP, defined in CIRScheme.
-         * @return StepFnT The function used to execute.
+         * @return CIRStepFnT The function used to execute.
          */
-        StepFnT _pick_func(CIRScheme scheme);
+        CIRStepFnT _pick_func(CIRScheme scheme);
 
         /**
          * @brief Used to check whether the condition hypothesis is satisfied.

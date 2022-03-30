@@ -41,6 +41,12 @@ namespace cir
     CIR::~CIR() { }
 
 
+    double CIR::_step_eul(double X_crt, double dW, double h)
+    {
+        auto X_nxt = (_a - _k*X_crt) * h + _sigma*std::sqrt(X_crt)*dW;
+        return X_nxt;
+    }
+
 
     double CIR::_step_imp_3(double X_crt, double dW, double h)
     {
@@ -123,7 +129,7 @@ namespace cir
     }
 
 
-    void CIR::_step(StepFnT func, double* p_X_crt, double* p_X_nxt, double dW, double h, double* p_other_arg)
+    void CIR::_step(CIRStepFnT func, double* p_X_crt, double* p_X_nxt, double dW, double h, double* p_other_arg)
     {
         *p_X_nxt = func(*p_X_crt, dW, h, p_other_arg);
     }
@@ -160,30 +166,34 @@ namespace cir
     }
 
 
-    StepFnT CIR::_pick_func(CIRScheme scheme)
+    CIRStepFnT CIR::_pick_func(CIRScheme scheme)
     {
-        StepFnT res;
+        CIRStepFnT res;
         switch (scheme)
         {
+        case EUL:
+            res = [this](double X_crt, double dW, double h, double* p_other_arg) \
+                    {return this->_step_eul(X_crt, dW, h);};
+            break;
         case IMP_3:
             res = [this](double X_crt, double dW, double h, double* p_other_arg) \
-                        {return this->_step_imp_3(X_crt, dW, h);};
+                    {return this->_step_imp_3(X_crt, dW, h);};
             break;
         case IMP_4:
             res = [this](double X_crt, double dW, double h, double* p_other_arg) \
-                        {return this->_step_imp_4(X_crt, dW, h);};
+                    {return this->_step_imp_4(X_crt, dW, h);};
             break;
         case TG:
             res = [this](double X_crt, double dW, double h, double* p_other_arg) \
-                        {return this->_step_tg(X_crt, dW, h);};
+                    {return this->_step_tg(X_crt, dW, h);};
             break;
         case QE:
             res = [this](double X_crt, double dW, double h, double* p_other_arg) \
-                        {return this->_step_qe(X_crt, dW, h, *p_other_arg);};
+                    {return this->_step_qe(X_crt, dW, h, *p_other_arg);};
             break;
         case EXP:
             res = [this](double X_crt, double dW, double h, double* p_other_arg) \
-                        {return this->_step_exp(X_crt, dW, h, *p_other_arg);};
+                    {return this->_step_exp(X_crt, dW, h, *p_other_arg);};
             break;
         default:
             break;
