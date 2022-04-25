@@ -41,3 +41,6 @@ test_step : $(OBJ_DIR)/test_step.o $(OBJ_DIR)/cir.o $(OBJ_DIR)/random.o
 
 test_mc : $(OBJ_DIR)/test_mc.o $(OBJ_DIR)/cir.o $(OBJ_DIR)/hes.o $(OBJ_DIR)/random.o
 	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ $^
+
+test_closed: $(OBJ_DIR)/test_closed.o $(OBJ_DIR)/eur_option.o
+	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(BOOST) -o $@ $^
