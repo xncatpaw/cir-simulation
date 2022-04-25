@@ -58,7 +58,7 @@ namespace cir
     }
 
 
-    HESStepFnT Heston::_pick_func(HESScheme scheme)
+    HESStepFnT Heston::_pick_func(Scheme scheme)
     {
         HESStepFnT res;
         switch (scheme)
@@ -79,7 +79,7 @@ namespace cir
     }
 
 
-    bool Heston::check_cond(double h, double* p_S0, double* p_other_arg, HESScheme scheme)
+    bool Heston::check_cond(double h, double* p_S0, double* p_other_arg, Scheme scheme)
     {
         bool res = true;
         switch (scheme)

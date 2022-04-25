@@ -13,6 +13,8 @@
 
 namespace cir
 {
+    using param_t = std::poisson_distribution<int>::param_type;
+
     /**
      * @brief The Gaussian distribution generator class.
      */
@@ -45,13 +47,18 @@ namespace cir
     /**
      * @brief Class used to generate the non-central chi squared distribution.
      */
-    // class NonCentralChi_2
-    // {
-    //     private:
-    //         uint _p, _q;
-    //         double _lam;
-        
-    //     public:
-    //         NonCentralChi_2(uint p, uint q, double lam);
-    // };
+    class NonCentralChi2
+    {
+    private:
+        double _nu;
+        std::default_random_engine generator;
+        std::normal_distribution<double> _gauss;
+        std::chi_squared_distribution<double> _chi_2;
+        std::poisson_distribution<int> _poisson;
+    
+    public:
+        NonCentralChi2(double nu);
+        double gen(double lambda);
+        double operator()(double lambda);
+    };
 }

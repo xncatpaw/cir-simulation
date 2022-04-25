@@ -17,7 +17,7 @@
 namespace cir
 {
     CIR::CIR(double k, double a, double sigma) : _k(k), _a(a), _sigma(sigma),
-            _sigma_sqr(sigma*sigma), _gauss()
+            _sigma_sqr(sigma*sigma), _gauss(), _chi_2(4*_a/_sigma_sqr), _poisson()
     {
         _theta = _k!=0 ? _a/_k : 0;
         _nu = 4 * _a / _sigma_sqr;
@@ -39,6 +39,14 @@ namespace cir
 
 
     CIR::~CIR() { }
+
+
+    double CIR::ita(double h) const
+    {
+        auto tmp = std::exp(-1.0 * _k * h);
+        auto res = 4 * _k * tmp / (_sigma_sqr * (1-tmp));
+        return res;
+    }
 
 
     double CIR::_step_eul(double X_crt, double dW, double h)
@@ -129,13 +137,20 @@ namespace cir
     }
 
 
+    double CIR::_step_ext(double X_crt, double dW, double h)
+    {
+        auto lambda = X_crt * ita(h);
+
+    }
+
+
     void CIR::_step(CIRStepFnT func, double* p_X_crt, double* p_X_nxt, double dW, double h, double* p_other_arg)
     {
         *p_X_nxt = func(*p_X_crt, dW, h, p_other_arg);
     }
 
 
-    void CIR::gen(double* p_out, double h, size_t n, size_t num, double* p_x0, CIRScheme scheme, double lambda, bool trace)
+    void CIR::gen(double* p_out, double h, size_t n, size_t num, double* p_x0, Scheme scheme, double lambda, bool trace)
     {
         auto std = std::sqrt(h); // The standared deviation of dW.
         double dW = 0.0;
@@ -158,7 +173,7 @@ namespace cir
     }
 
 
-    void CIR::operator()(double* p_out, double T, size_t n, size_t num, double* p_x0, CIRScheme scheme, double lambda, bool trace)
+    void CIR::operator()(double* p_out, double T, size_t n, size_t num, double* p_x0, Scheme scheme, double lambda, bool trace)
     {
         assert(T>=0 && n>0 && num>0 );
         double h = T / (double (n));
@@ -166,7 +181,7 @@ namespace cir
     }
 
 
-    CIRStepFnT CIR::_pick_func(CIRScheme scheme)
+    CIRStepFnT CIR::_pick_func(Scheme scheme)
     {
         CIRStepFnT res;
         switch (scheme)
@@ -202,7 +217,7 @@ namespace cir
     }
 
 
-    bool CIR::check_cond(double h, double* p_x0, double* p_other_arg, CIRScheme scheme)
+    bool CIR::check_cond(double h, double* p_x0, double* p_other_arg, Scheme scheme)
     {
         bool res = true;
         switch (scheme)

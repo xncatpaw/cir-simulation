@@ -98,10 +98,33 @@ namespace cir
     {
         return uni_distr(generator);
     }
-    // NonCentralChi_2::NonCentralChi_2(uint p, uint q, double lam=0.0)
-    // {
-    //     assert(lam >= 0);
-    //     _lam = lam;
-    // }
 
+
+    NonCentralChi2::NonCentralChi2(double nu) : _nu(nu), 
+            generator(std::chrono::steady_clock::now().time_since_epoch().count()),
+            _gauss(), _chi_2(nu), _poisson()
+    { }
+
+
+    double NonCentralChi2::gen(double lambda)
+    {
+        _poisson.param(param_t(lambda));
+        int N = _poisson(generator);
+        double Y = 0.0;
+        for(auto i=0; i<N; ++i)
+        {
+            auto G = _gauss(generator);
+            Y += G*G;
+            G = _gauss(generator);
+            Y += G*G;
+        }
+        double Z = _chi_2(generator);
+        return Y + Z;
+    }
+
+
+    double NonCentralChi2::operator()(double lambda)
+    {
+        return gen(lambda);
+    }
 } 

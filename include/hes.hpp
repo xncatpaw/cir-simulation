@@ -64,7 +64,7 @@ namespace cir
         /**
          * @brief Used to pick the selected step function.
          * 
-         * @param scheme The scheme to simulate, could be IMP_3, IMP_4, TG or EXP, defined in CIRScheme.
+         * @param scheme The scheme to simulate, could be IMP_3, IMP_4, TG or EXP, defined in Scheme.
          * @return StepFnT The function used to execute.
          */
 
@@ -84,8 +84,19 @@ namespace cir
                     double* p_S_cur, double* p_S_nxt, double* p_V_cur, double* p_V_nxt,
                     double dWS,  double h, double* p_other_arg);
 
-        HESStepFnT _pick_func(HESScheme scheme);
+        HESStepFnT _pick_func(Scheme scheme);
 
+        /**
+         * @brief Used to check whether the condition hypothesis is satisified.
+         * 
+         * @param h 
+         * @param p_S0 
+         * @param p_other_arg 
+         * @param scheme 
+         * @return true 
+         * @return false 
+         */
+        bool check_cond(double h, double* p_S0, double* p_other_arg, Scheme scheme);
     };
     
 }

@@ -10,7 +10,7 @@ CFLAGS = -Wall
 EIGEN = -I $(EIGEN_DIR)
 BOOST = -I $(BOOST_DIR)
 
-LINK_TARGET = test, test_rng, test_step
+LINK_TARGET = test, test_rng, test_step, test_chi2
 
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_ALL = $(patsubst %.cpp, %.o, $(addprefix $(OBJ_DIR)/, $(notdir $(SRC))))
@@ -37,4 +37,7 @@ test_rng : $(OBJ_DIR)/test_rng.o $(OBJ_DIR)/random.o
 	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ $^
 
 test_step : $(OBJ_DIR)/test_step.o $(OBJ_DIR)/cir.o $(OBJ_DIR)/random.o
+	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ $^
+
+test_chi2 : $(OBJ_DIR)/test_chi2.o $(OBJ_DIR)/random.o
 	$(CC) -g $(CPPFLAGS) $(CFLAGS) $(EIGEN) -o $@ $^
