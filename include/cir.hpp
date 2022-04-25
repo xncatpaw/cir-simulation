@@ -27,10 +27,11 @@ namespace cir
         //  dX_t = (a - kX_t)dt + \sigma \sqrt(X_t) dW_t,
         //  dX_t = k(\theta - X_t)dt + \sigma\sqrt(X_t) dW_t.
         double _k, _a, _theta, _sigma; 
-        double _nu, _sigma_sqr;
+        double _sigma_sqr, _nu;
         Gaussian _gauss;
-        std::chi_squared_distribution<double> _chi_2;
-        std::poisson_distribution<double> _poisson;
+        NonCentralChi2 _chi_2;
+        // std::chi_squared_distribution<double> _chi_2;
+        // std::poisson_distribution<double> _poisson;
 
     private:
         double ita(double h) const;
@@ -55,7 +56,7 @@ namespace cir
          * @param num The number of samples to simulate.
          * @param p_x0 The pointer to initial values. It shall of size n. 
          * @param scheme Simulation scheme to use, shall be IMP_3, IMP_4 or EXP.
-         * @param lambda The lambda param for scheme EXP.
+         * @param lambda The lambda param for scheme QE or EXP.
          * @param trace Whether keep or not the trace of process.
          */
         void operator()(double* p_out, double T, size_t n, size_t num, double* p_x0, Scheme scheme, 
@@ -68,8 +69,8 @@ namespace cir
          * @param h The one step size.
          * @param n The number of steps.
          * @param num The number of samples to simulate.
-         * @param p_x0 The pointer to initial values. It shall of size n. 
-         * @param scheme Simulation scheme to use, shall be IMP_3, IMP_4 or EXP.
+         * @param p_x0 The pointer to initial values. It shall of size num. 
+         * @param scheme Simulation scheme to use, shall be EUL, IMP_3, IMP_4, EXP, TG, QE, or EXT.
          * @param lambda The lambda param for scheme EXP.
          * @param trace Whether keep or not the trace of process.
          */

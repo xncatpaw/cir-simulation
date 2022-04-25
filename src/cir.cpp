@@ -17,7 +17,7 @@
 namespace cir
 {
     CIR::CIR(double k, double a, double sigma) : _k(k), _a(a), _sigma(sigma),
-            _sigma_sqr(sigma*sigma), _gauss(), _chi_2(4*_a/_sigma_sqr), _poisson()
+            _sigma_sqr(sigma*sigma), _gauss(), _chi_2(4*_a/_sigma_sqr)
     {
         _theta = _k!=0 ? _a/_k : 0;
         _nu = 4 * _a / _sigma_sqr;
@@ -25,7 +25,7 @@ namespace cir
 
 
     CIR::CIR(double k, double a, double sigma, unsigned seed) : _k(k), _a(a), _sigma(sigma),
-            _sigma_sqr(sigma*sigma), _gauss(seed)
+            _sigma_sqr(sigma*sigma), _gauss(seed), _chi_2(4*_a/_sigma_sqr)
     {
         _theta = _k!=0 ? _a/_k : 0;
         _nu = 4 * _a / _sigma_sqr;
@@ -34,7 +34,7 @@ namespace cir
 
     CIR::CIR(const CIR& other) : _k(other._k), _a(other._a), _theta(other._theta),
              _sigma(other._sigma), _sigma_sqr(other._sigma_sqr), 
-             _nu(other._nu),  _gauss(other._gauss) 
+             _nu(other._nu),  _gauss(other._gauss), _chi_2(other._nu) 
     {}
 
 
@@ -139,8 +139,10 @@ namespace cir
 
     double CIR::_step_ext(double X_crt, double dW, double h)
     {
-        auto lambda = X_crt * ita(h);
-
+        auto _itah = ita(h);
+        auto lambda = X_crt * _itah;
+        auto X_nxt = _chi_2(lambda) * std::exp(-1.0*_k*h) / _itah;
+        return X_nxt;
     }
 
 
@@ -152,7 +154,7 @@ namespace cir
 
     void CIR::gen(double* p_out, double h, size_t n, size_t num, double* p_x0, Scheme scheme, double lambda, bool trace)
     {
-        auto std = std::sqrt(h); // The standared deviation of dW.
+        auto std_ = std::sqrt(h); // The standared deviation of dW.
         double dW = 0.0;
         assert (check_cond(h, p_x0, &lambda, scheme));
         auto step_func = _pick_func(scheme);
@@ -163,11 +165,11 @@ namespace cir
             p_tmp[0] = p_x0[i]; // The first value.
             for(size_t j=0; j<n; ++j)
             {
-                dW = _gauss.gen() * std;
+                dW = _gauss.gen() * std_;
                 if(trace)
-                { _step(step_func, p_tmp+j, p_tmp+j+1, dW, h); }
+                { _step(step_func, p_tmp+j, p_tmp+j+1, dW, h, &lambda); }
                 else
-                { _step(step_func, p_tmp, p_tmp, dW, h); }
+                { _step(step_func, p_tmp, p_tmp, dW, h, &lambda); }
             }
         }
     }
@@ -210,6 +212,9 @@ namespace cir
             res = [this](double X_crt, double dW, double h, double* p_other_arg) \
                     {return this->_step_exp(X_crt, dW, h, *p_other_arg);};
             break;
+        case EXT:
+            res = [this](double X_crt, double dW, double h, double* p_other_arg) \
+                    {return this->_step_ext(X_crt, dW, h);};
         default:
             break;
         }
@@ -220,6 +225,7 @@ namespace cir
     bool CIR::check_cond(double h, double* p_x0, double* p_other_arg, Scheme scheme)
     {
         bool res = true;
+        double lambda = p_other_arg ? * p_other_arg : 0;
         switch (scheme)
         {
         case IMP_3:
@@ -231,13 +237,20 @@ namespace cir
         case TG:
             break;
         case QE:
-            double lambda = *p_other_arg;
+            // double lambda = *p_other_arg;
             res = (lambda>=1 && lambda<=2);
             break;
         case EXP:
-            double lambda = *p_other_arg;
+            // double lambda = *p_other_arg;
             res = (lambda>=0 && lambda<=(_a-_sigma_sqr/4.0));
             break;
+        case CMB:
+            res = false;
+            break;
+        case EUL:
+            res = true;
+        case EXT:
+            res = true;
         default:
             break;
         }

@@ -108,7 +108,7 @@ namespace cir
 
     double NonCentralChi2::gen(double lambda)
     {
-        _poisson.param(param_t(lambda));
+        _poisson.param(param_t(lambda/2));
         int N = _poisson(generator);
         double Y = 0.0;
         for(auto i=0; i<N; ++i)

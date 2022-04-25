@@ -35,6 +35,45 @@ namespace cir
         Heston(double mu, double rho, const CIR &);
         ~Heston();
 
+
+        /**
+         * @brief Used to generate the process, with or without trace.
+         * @param p_S_out Pointer to the output buffer of S value. If keep trace, it shall have size at least num * (n+1). If not, at least num. 
+         * @param p_V_out Pointer to the output buffer of V value. If keep trace, it shall have size at least num * (n+1). If not, at least num. 
+         * @param h The one step size.
+         * @param n The number of steps.
+         * @param num The number of samples to simulate.
+         * @param p_S0 The pointer to initial values of S. It shall of size num. 
+         * @param p_V0 The pointer to initial values of V. It shall of size num. 
+         * @param hes_scheme Simulation scheme to use, shall be EUL or CMB.
+         * @param cir_scheme Simulation scheme to use, shall be EUL, IMP_3, IMP_4, EXP, TG, QE, or EXT.
+         * @param lambda The lambda param for scheme QE or EXP.
+         * @param trace Whether keep or not the trace of process.
+         */
+        void gen(double *p_S_out, double *p_V_out, double h, size_t n, size_t num,
+                double *p_S0, double *p_V0, Scheme hes_scheme, Scheme cir_scheme,
+                double lambda=0.0, double gamma_1=0.5, double gamma_2=0.5, bool trace=false);
+
+
+        /**
+         * @brief Used to generate the process, with or without trace.
+         * @param p_S_out Pointer to the output buffer of S value. If keep trace, it shall have size at least num * (n+1). If not, at least num. 
+         * @param p_V_out Pointer to the output buffer of V value. If keep trace, it shall have size at least num * (n+1). If not, at least num. 
+         * @param h The one step size.
+         * @param n The number of steps.
+         * @param num The number of samples to simulate.
+         * @param p_S0 The pointer to initial values of S. It shall of size num. 
+         * @param p_V0 The pointer to initial values of V. It shall of size num. 
+         * @param hes_scheme Simulation scheme to use, shall be EUL or CMB.
+         * @param cir_scheme Simulation scheme to use, shall be EUL, IMP_3, IMP_4, EXP, TG, QE, or EXT.
+         * @param lambda The lambda param for scheme QE or EXP.
+         * @param trace Whether keep or not the trace of process.
+         */
+        void operator()(double *p_S_out, double *p_V_out, double h, size_t n, size_t num,
+                double *p_S0, double *p_V0, Scheme hes_scheme, Scheme cir_scheme,
+                double lambda=0.0, double gamma_1=0.5, double gamma_2=0.5, bool trace=false);
+
+
         /**
          * @brief Used to execute one step simulation of Euler method.
          * 
@@ -82,7 +121,7 @@ namespace cir
          */
         void _step(HESStepFnT hes_step, 
                     double* p_S_cur, double* p_S_nxt, double* p_V_cur, double* p_V_nxt,
-                    double dWS,  double h, double* p_other_arg);
+                    double dWS,  double h, double* p_other_arg=nullptr);
 
         HESStepFnT _pick_func(Scheme scheme);
 
