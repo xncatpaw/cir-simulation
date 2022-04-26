@@ -1,6 +1,7 @@
 # Prerequisites
 *.d
 *.vscode
+*.csv
 
 # Compiled Object files
 *.slo

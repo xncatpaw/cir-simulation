@@ -57,6 +57,8 @@ namespace cir
          * @param p_x0 The pointer to initial values. It shall of size n. 
          * @param scheme Simulation scheme to use, shall be IMP_3, IMP_4 or EXP.
          * @param lambda The lambda param for scheme QE or EXP.
+         *          For EXP, 0 <= lambda <= a-\sigma^2/4, 
+         *          For QE, 1 <= lambda <= 2.
          * @param trace Whether keep or not the trace of process.
          */
         void operator()(double* p_out, double T, size_t n, size_t num, double* p_x0, Scheme scheme, 

@@ -52,6 +52,7 @@ namespace cir
     double CIR::_step_eul(double X_crt, double dW, double h)
     {
         auto X_nxt = (_a - _k*X_crt) * h + _sigma*std::sqrt(X_crt)*dW;
+        X_nxt = X_nxt > 0.0 ? X_nxt : 0.0;
         return X_nxt;
     }
 
